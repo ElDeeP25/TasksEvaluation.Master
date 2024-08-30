@@ -1,0 +1,22 @@
+﻿@model TasksEvaluation.Core.DTOs.SolutionDTO
+
+<div class="container mt-4">
+    <h2>Solution Details</h2>
+    <dl class="row">
+        <dt class="col-sm-3">File</dt>
+        <dd class="col-sm-9">@Model.SolutionFile</dd>
+
+        <dt class="col-sm-3">Notes</dt>
+        <dd class="col-sm-9">@Model.Notes</dd>
+
+        <dt class="col-sm-3">Grade</dt>
+        <dd class="col-sm-9">@Model.GradeId</dd>
+
+        <dt class="col-sm-3">Student</dt>
+        <dd class="col-sm-9">@Model.StudentId</dd>
+
+        <dt class="col-sm-3">Assignment</dt>
+        <dd class="col-sm-9">@Model.AssignmentId</dd>
+    </dl>
+    <a href="@Url.Action("Index")" class="btn btn-secondary">Back to List</a>
+</div>

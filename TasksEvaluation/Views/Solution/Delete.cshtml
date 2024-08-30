@@ -1,0 +1,29 @@
+﻿@model TasksEvaluation.Core.DTOs.SolutionDTO
+
+<div class="container mt-4">
+    <h2>Delete Solution</h2>
+    <h4>Are you sure you want to delete this?</h4>
+    <dl class="row">
+        <dt class="col-sm-3">File</dt>
+        <dd class="col-sm-9">@Model.SolutionFile</dd>
+
+        <dt class="col-sm-3">Notes</dt>
+        <dd class="col-sm-9">@Model.Notes</dd>
+
+        <dt class="col-sm-3">Grade</dt>
+        <dd class="col-sm-9">@Model.GradeId</dd>
+
+        <dt class="col-sm-3">Student</dt>
+        <dd class="col-sm-9">@Model.StudentId</dd>
+
+        <dt class="col-sm-3">Assignment</dt>
+        <dd class="col-sm-9">@Model.AssignmentId</dd>
+    </dl>
+
+    <form asp-action="DeleteConfirmed">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a href="@Url.Action("Index")" class="btn btn-secondary">Back to List</a>
+    </form>
+</div>

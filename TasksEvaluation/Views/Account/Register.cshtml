@@ -1,0 +1,204 @@
+﻿@model TasksEvaluation.Core.DTOs.RegisterDTO
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body {
+            background: #222D32;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .card {
+            margin-top: 75px;
+            background: #1A2226;
+            color: #ECF0F5;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .card-body img {
+            max-width: 80%;
+            height: auto;
+        }
+
+        .form-floating {
+            margin-bottom: 20px;
+        }
+
+        input[type=text], input[type=password] {
+            background-color: #1A2226;
+            border: 1px solid #0DB8DE;
+            border-radius: 5px;
+            color: #ECF0F5;
+            padding: 10px;
+            margin-bottom: 20px;
+            outline: none;
+        }
+
+        .form-floating label {
+            color: #6C6C6C;
+            font-weight: bold;
+        }
+
+        .register-key {
+            height: 100px;
+            font-size: 80px;
+            line-height: 100px;
+            background: -webkit-linear-gradient(#FF6F61, #FF3B5C); /* تدرج لوني يناسب تسجيل الدخول */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .register-key i {
+                margin-right: 10px; /* المسافة بين الأيقونة وعلامة + */
+            }
+
+            .register-key .plus {
+                font-size: 80px;
+                color: transparent;
+                background: -webkit-linear-gradient(#FF6F61, #FF3B5C); /* نفس التدرج اللوني */
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+
+
+        .bg-light {
+            --bs-bg-opacity: 1;
+            background-color: #222D32 !important; /* تحديث اللون ليتناسب مع لون الصفحة */
+        }
+
+
+        input:focus {
+            border-color: #17a2b8;
+            box-shadow: 0 0 5px rgba(23, 162, 184, 0.5);
+            background-color: #1A2226;
+        }
+
+        .btn-primary {
+            background-color: #007bff; /* اللون الأساسي للزر */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            padding: 12px 24px; /* حجم الزر */
+            font-size: 16px; /* حجم الخط */
+            transition: all 0.3s ease; /* تأثير التغيير والانتقال */
+            cursor: pointer;
+            position: relative; /* لإضافة التأثيرات اللاحقة */
+            overflow: hidden; /* لإخفاء أي تأثيرات خارجية */
+        }
+
+            .btn-primary::before {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 300%;
+                height: 300%;
+                background: rgba(255, 255, 255, 0.2);
+                transition: transform 0.3s ease;
+                transform: translate(-50%, -50%) scale(0);
+                border-radius: 50%;
+                z-index: 0;
+            }
+
+            .btn-primary:hover::before {
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            .btn-primary:hover {
+                background-color: #0056b3; /* لون الخلفية عند التمرير */
+                transform: translateY(-3px) scale(1.05); /* رفع الزر قليلاً عند التمرير */
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* إضافة ظل للزر */
+            }
+
+            .btn-primary:active {
+                transform: translateY(1px) scale(1); /* تأثير الضغط على الزر */
+            }
+
+            .btn-primary span {
+                position: relative;
+                z-index: 1; /* وضع النص فوق التأثيرات */
+            }
+    </style>
+</head>
+<body>
+    <section class="bg-light p-3 p-md-4 p-xl-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-9 col-lg-7 col-xl-6 col-xxl-5">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="text-center mb-4">
+                                
+                            </div>
+                            <div class="register-key">
+                                <i class="fa fa-user" aria-hidden="true"></i> <!-- الأيقونة المناسبة -->
+                                <span class="plus">+</span> <!-- علامة + بجانب الأيقونة -->
+                            </div>
+
+                            <h2 class="text-center">Add Admin</h2>
+                            <form asp-action="Register" method="post" class="mt-4">
+                                <div class="form-floating">
+                                    <input asp-for="Email" class="form-control" placeholder="Email" required />
+                                    <label asp-for="Email">Email</label>
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                                <div class="form-floating">
+                                    <input asp-for="FirstName" class="form-control" placeholder="First Name" required />
+                                    <label asp-for="FirstName">First Name</label>
+                                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                                </div>
+                                <div class="form-floating">
+                                    <input asp-for="LastName" class="form-control" placeholder="Last Name" required />
+                                    <label asp-for="LastName">Last Name</label>
+                                    <span asp-validation-for="LastName" class="text-danger"></span>
+                                </div>
+                                <div class="form-floating">
+                                    <input asp-for="Password" type="password" class="form-control" placeholder="Password" required />
+                                    <label asp-for="Password">Password</label>
+                                    <span asp-validation-for="Password" class="text-danger"></span>
+                                </div>
+                                <div class="form-floating">
+                                    <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Confirm Password" required />
+                                    <label asp-for="ConfirmPassword">Confirm Password</label>
+                                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                                </div>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-lg">Add New Admin</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

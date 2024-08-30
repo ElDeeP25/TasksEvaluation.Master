@@ -1,0 +1,24 @@
+﻿@model TasksEvaluation.Core.DTOs.AssignmentDTO
+
+@{
+    ViewData["Title"] = "Assignment Details";
+}
+
+<div class="container mt-4">
+   
+    <dl class="row">
+        <dt class="col-sm-3">Title</dt>
+        <dd class="col-sm-9">@Model.Title</dd>
+
+        <dt class="col-sm-3">Description</dt>
+        <dd class="col-sm-9">@Model.Description</dd>
+
+        <dt class="col-sm-3">Deadline</dt>
+        <dd class="col-sm-9">@Model.DeadLine.ToString("yyyy-MM-dd")</dd>
+
+        <dt class="col-sm-3">Group</dt>
+        <dd class="col-sm-9">@Model.GroupId.HasValue ? Model.Group.Title : "N/A"</dd>
+    </dl>
+    <a href="@Url.Action("Edit", new { id = Model.Id })" class="btn btn-warning">Edit</a>
+    <a href="@Url.Action("Index")" class="btn btn-secondary">Back to List</a>
+</div>

@@ -1,0 +1,40 @@
+﻿@model IEnumerable<TasksEvaluation.Core.DTOs.AssignmentDTO>
+
+@{
+    ViewData["Title"] = "Assignments";
+}
+
+<div class="container mt-4">
+  
+    <a href="@Url.Action("Create")" class="btn btn-primary mb-3">Create New Assignment</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Deadline</th>
+                <th>Group</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Title</td>
+                    <td>@item.Description</td>
+                    <td>@item.DeadLine.ToString("yyyy-MM-dd")</td>
+                    <td>@(item.GroupId.HasValue ? Model.FirstOrDefault(g => g.Id == item.GroupId.Value)?.Title : "N/A")</td>
+                    <td>
+                        <a href="@Url.Action("Details", new { id = item.Id })" class="btn btn-info btn-sm">Details</a>
+                        <a href="@Url.Action("Edit", new { id = item.Id })" class="btn btn-warning btn-sm">Edit</a>
+                        <form action="@Url.Action("Delete", new { id = item.Id })" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            @Html.AntiForgeryToken()
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,12 @@
+﻿@model TasksEvaluation.Core.DTOs.AssignmentDTO
+
+@{
+    ViewData["Title"] = "Create Assignment";
+
+}
+
+<div class="container mt-4">
+    
+    @await Html.PartialAsync("_AssignmentForm", Model)
+
+</div>

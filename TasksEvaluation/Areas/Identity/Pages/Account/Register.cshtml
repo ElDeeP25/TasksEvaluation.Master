@@ -1,0 +1,106 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<section class="p-3 p-md-4 p-xl-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-6 bsb-tpl-bg-platinum">
+                <div class="d-flex flex-column justify-content-between h-100 p-3 p-md-4 p-xl-5">
+                    
+                    <img class="img-fluid rounded mx-auto " loading="lazy" src="~/img/logo.png" width=100% height=20% alt=" Logo">
+                    <p class="mb-0">Already have an account? <a asp-area="Identity" asp-page="/Account/Login" class="link-secondary text-decoration-none">Log in</a></p>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 bsb-tpl-bg-lotion">
+                <div class="p-3 p-md-4 p-xl-5">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-5">
+                                <h3>@ViewData["Title"]</h3>
+                                <p>Create a new account.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                        <div class="row gy-3 gy-md-4 overflow-hidden">
+                            <div class="col-12">
+                                <label for="Input.FirstName" class="form-label">First Name <span class="text-danger">*</span></label>
+                                <input asp-for="Input.FirstName" class="form-control" autocomplete="username" aria-required="true" placeholder="First Name" />
+                                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                            </div>
+                            <div class="col-12">
+                                <label for="Input.LastName" class="form-label">Last Name <span class="text-danger">*</span></label>
+                                <input asp-for="Input.LastName" class="form-control" autocomplete="username" aria-required="true" placeholder="Last Name" />
+                                <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                            </div>
+                            <div class="col-12">
+                                <label for="Input.Email" class="form-label">Email <span class="text-danger">*</span></label>
+                                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                                <span asp-validation-for="Input.Email" class="text-danger"></span>
+                            </div>
+                            <div class="col-12">
+                                <label for="Input.Password" class="form-label">Password <span class="text-danger">*</span></label>
+                                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                                <span asp-validation-for="Input.Password" class="text-danger"></span>
+                            </div>
+                            <div class="col-12">
+                                <label for="Input.ConfirmPassword" class="form-label">Confirm Password <span class="text-danger">*</span></label>
+                                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-grid">
+                                    <button id="registerSubmit" type="submit" class="btn bsb-btn-xl btn-primary">Register</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="row">
+                        <div class="col-12">
+                            <hr class="mt-5 mb-4 border-secondary-subtle">
+                            <div class="text-end">
+                                <p class="mb-4">Or register with</p>
+                                @{
+                                    if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                                    {
+                                        <div>
+                                            <p>
+                                                There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">
+                                                    article
+                                                    about setting up this ASP.NET application to support logging in via external services
+                                                </a>.
+                                            </p>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                                            <div class="d-flex gap-3 flex-column flex-xl-row">
+                                                @foreach (var provider in Model.ExternalLogins!)
+                                                {
+                                                    <button type="submit" class="btn bsb-btn-xl btn-outline-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-@provider.Name.ToLower()" viewBox="0 0 16 16">
+                                                            <path d="...SVG path for provider logo..."></path>
+                                                        </svg>
+                                                        <span class="ms-2 fs-6">@provider.DisplayName</span>
+                                                    </button>
+                                                }
+                                            </div>
+                                        </form>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

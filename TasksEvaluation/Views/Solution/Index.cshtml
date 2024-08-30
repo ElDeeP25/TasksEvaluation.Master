@@ -1,0 +1,34 @@
+﻿@model IEnumerable<TasksEvaluation.Core.DTOs.SolutionDTO>
+
+<div class="container mt-4">
+    <h2>Solutions</h2>
+    <a href="@Url.Action("Create")" class="btn btn-primary mb-3">Create New Solution</a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>File</th>
+                <th>Notes</th>
+                <th>Grade</th>
+                <th>Student</th>
+                <th>Assignment</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var solution in Model)
+            {
+                <tr>
+                    <td>@solution.SolutionFile</td>
+                    <td>@solution.Notes</td>
+                    <td>@solution.GradeId</td>
+                    <td>@solution.StudentId</td>
+                    <td>@solution.AssignmentId</td>
+                    <td>
+                        <a href="@Url.Action("Edit", new { id = solution.Id })" class="btn btn-warning btn-sm">Edit</a>
+                        <a href="@Url.Action("Delete", new { id = solution.Id })" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

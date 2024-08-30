@@ -1,0 +1,44 @@
+﻿@model TasksEvaluation.Core.DTOs.SolutionDTO
+
+<div class="container mt-4">
+    <h2>Create Solution</h2>
+
+    <form asp-action="Create" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+
+        <div class="form-group">
+            <label asp-for="SolutionFile" class="form-label">Solution File</label>
+            <input asp-for="SolutionFile" type="file" class="form-control" />
+            <span asp-validation-for="SolutionFile" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mt-3">
+            <label asp-for="Notes" class="form-label">Notes</label>
+            <textarea asp-for="Notes" class="form-control" placeholder="Enter notes here" rows="4"></textarea>
+            <span asp-validation-for="Notes" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mt-3">
+            <label asp-for="GradeId" class="form-label">Grade</label>
+            <input asp-for="GradeId" class="form-control" />
+            <span asp-validation-for="GradeId" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mt-3">
+            <label asp-for="StudentId" class="form-label">Student</label>
+            <input asp-for="StudentId" class="form-control" />
+            <span asp-validation-for="StudentId" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mt-3">
+            <label asp-for="AssignmentId" class="form-label">Assignment</label>
+            <input asp-for="AssignmentId" class="form-control" />
+            <span asp-validation-for="AssignmentId" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mt-4">
+            <button type="submit" class="btn btn-primary">Create</button>
+            <a href="@Url.Action("Index")" class="btn btn-secondary">Back to List</a>
+        </div>
+    </form>
+</div>

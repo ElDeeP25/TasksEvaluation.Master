@@ -1,0 +1,56 @@
+﻿@model TasksEvaluation.Core.DTOs.StudentDTO
+
+@{
+    ViewData["Title"] = "Student Details";
+}
+
+<div class="container mt-4">
+    <h1>@ViewData["Title"]</h1>
+
+    <div>
+        <h4>Student Details</h4>
+        <hr />
+
+        <dl class="row">
+            <dt class="col-sm-3">
+                Full Name
+            </dt>
+            <dd class="col-sm-9">
+                @Model.FullName
+            </dd>
+
+            <dt class="col-sm-3">
+                Mobile Number
+            </dt>
+            <dd class="col-sm-9">
+                @Model.MobileNumber
+            </dd>
+
+            <dt class="col-sm-3">
+                Email
+            </dt>
+            <dd class="col-sm-9">
+                @Model.Email
+            </dd>
+
+            <dt class="col-sm-3">
+                Group
+            </dt>
+            <dd class="col-sm-9">
+                @Model.GroupId
+            </dd>
+
+            <dt class="col-sm-3">
+                Profile Picture
+            </dt>
+            <dd class="col-sm-9">
+                <img src="@Model.ProfilePic" alt="Profile Picture" class="img-fluid rounded" style="max-width: 200px;" />
+            </dd>
+        </dl>
+
+        <p>
+            <a href="@Url.Action("Edit", new { id = Model.Id })" class="btn btn-warning">Edit</a>
+            <a href="@Url.Action("Index")" class="btn btn-secondary">Back to List</a>
+        </p>
+    </div>
+</div>

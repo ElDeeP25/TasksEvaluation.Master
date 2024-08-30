@@ -1,0 +1,56 @@
+﻿@model IEnumerable<TasksEvaluation.Core.DTOs.StudentDTO>
+
+@{
+    ViewData["Title"] = "Students";
+}
+
+<div class="container mt-4">
+    <h1>@ViewData["Title"]</h1>
+
+    <p>
+        <a href="@Url.Action("Create")" class="btn btn-primary">Create New</a>
+    </p>
+
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.FirstOrDefault().FullName)</th>
+                <th>@Html.DisplayNameFor(model => model.FirstOrDefault().MobileNumber)</th>
+                <th>@Html.DisplayNameFor(model => model.FirstOrDefault().Email)</th>
+                <th>@Html.DisplayNameFor(model => model.FirstOrDefault().GroupId)</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.FullName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.MobileNumber)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                    <td>@Html.DisplayFor(modelItem => item.GroupId)</td>
+                    <td>
+                        <a href="@Url.Action("Edit", new { id = item.Id })" class="btn btn-warning btn-sm">Edit</a>
+                        <a href="@Url.Action("Details", new { id = item.Id })" class="btn btn-info btn-sm">Details</a>
+                        <a href="@Url.Action("Delete", new { id = item.Id })" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Add custom CSS if needed -->
+<style>
+    .table {
+        margin-top: 20px;
+    }
+
+        .table th, .table td {
+            text-align: center;
+        }
+
+    .btn-sm {
+        margin: 0 2px;
+    }
+</style>

@@ -1,0 +1,104 @@
+﻿/* Navbar Styles */
+.navbar {
+    background-color: #343a40; /* Dark background */
+}
+.navbar-brand i {
+    margin-left:10px;
+    font-size: 2.5rem; /* حجم الأيقونة */
+    color: #f8f9fa; /* لون الأيقونة */
+}
+
+    .navbar .navbar-brand img {
+        max-width: 40px; /* Adjust logo size */
+        height: auto;
+    }
+/* General button styling */
+.custom-btn {
+    margin-right: 10px;
+    border: 2px solid #007bff; /* Color of the border */
+    color: #007bff; /* Text color */
+    background-color: transparent; /* Transparent background */
+    padding: 8px 16px; /* Padding around text */
+    border-radius: 5px; /* Rounded corners */
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
+    font-size: 1rem; /* Font size */
+}
+
+    /* Button hover effect */
+    .custom-btn:hover {
+        background-color: #007bff; /* Background color on hover */
+        color: #fff; /* Text color on hover */
+        border-color: #0056b3; /* Border color on hover */
+    }
+
+    /* Button active effect */
+    .custom-btn:active {
+        background-color: #0056b3; /* Background color on click */
+        border-color: #004085; /* Border color on click */
+    }
+
+    /* Add animation for hover effect */
+    .custom-btn:hover {
+        transform: scale(1.05); /* Slightly enlarge button on hover */
+    }
+
+    /* Optional: Add focus outline for accessibility */
+    .custom-btn:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(38, 143, 255, 0.5); /* Add a focus outline */
+    }
+
+.navbar-nav .nav-link {
+    color: #f8f9fa !important; /* Light text color */
+}
+
+    .navbar-nav .nav-link:hover {
+        color: #ffd700 !important; /* Highlight color on hover */
+    }
+
+/* Sidebar Styles */
+.sidebar {
+    width: 250px; /* Adjust sidebar width */
+    background: #ffffff;
+    color: #333;
+    transition: transform 0.3s ease;
+}
+
+    .sidebar a.sidebar-link {
+        color: #333;
+    }
+
+        .sidebar a.sidebar-link:hover {
+            background-color: #e0e0e0;
+            color: #000;
+        }
+
+.toggle-btn {
+    display: none;
+    
+}
+
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        transform: translateY(-100%);
+        z-index: 1000;
+    }
+
+        .sidebar.active {
+            transform: translateY(0);
+        }
+
+    .toggle-btn {
+        display: block;
+        position: fixed;
+        top: 15px;
+        right: 15px;
+        z-index: 1001;
+    }
+}

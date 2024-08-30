@@ -1,0 +1,27 @@
+﻿@model TasksEvaluation.Core.DTOs.AssignmentDTO
+
+@{
+    ViewData["Title"] = "Delete Assignment";
+}
+
+<div class="container mt-4">
+    
+    <dl class="row">
+        <dt class="col-sm-3">Title</dt>
+        <dd class="col-sm-9">@Model.Title</dd>
+
+        <dt class="col-sm-3">Description</dt>
+        <dd class="col-sm-9">@Model.Description</dd>
+
+        <dt class="col-sm-3">Deadline</dt>
+        <dd class="col-sm-9">@Model.DeadLine.ToString("yyyy-MM-dd")</dd>
+
+        <dt class="col-sm-3">Group</dt>
+        <dd class="col-sm-9">@Model.GroupId.HasValue ? Model.Group.Title : "N/A"</dd>
+    </dl>
+    <form asp-action="DeleteConfirmed" method="post">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a href="@Url.Action("Index")" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
