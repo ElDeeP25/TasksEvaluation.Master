@@ -17,5 +17,7 @@ namespace TasksEvaluation.Core.Interfaces.IServices
         Task<AssignmentDTO> Create(AssignmentDTO model);
         Task Update(AssignmentDTO model);
         Task Delete(int id);
+        Task UpdateAssignment(AssignmentDTO assignment);
+        Task DeleteAssignment(int id);
     }
 }

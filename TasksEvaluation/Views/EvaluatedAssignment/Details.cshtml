@@ -1,0 +1,23 @@
+﻿@model SolutionStudentDTO
+
+@{
+    ViewData["Title"] = "Solution Details";
+}
+
+<div class="container mt-4">
+    <h2>@Model.AssignmentTitle</h2>
+    <p><strong>Student:</strong> @Model.StudentName</p>
+    <p><strong>Grade:</strong> @Model.GardeName</p>
+    <p><strong>Notes:</strong> @Model.Notes</p>
+
+    @if (!string.IsNullOrEmpty(Model.SolutionFile))
+    {
+        <div class="mb-3">
+            <a href="@Url.Content("~/pdfs/" + Model.SolutionFile)" class="btn btn-info" target="_blank">
+                View Solution
+            </a>
+        </div>
+    }
+
+    <a href="@Url.Action("Index")" class="btn btn-secondary mt-3">Back to List</a>
+</div>

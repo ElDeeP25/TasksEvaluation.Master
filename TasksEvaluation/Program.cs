@@ -42,6 +42,7 @@ builder.Services.AddTransient<IGradeService, GradeService>();
 builder.Services.AddTransient<ICourseService, CourseService>();
 builder.Services.AddTransient<IEvaluatedAssignmentService, EvaluatedAssignmentService>();
 builder.Services.AddTransient<IGroupService, GroupService>();
+builder.Services.AddTransient<IEmailBodyBuilder, EmailBodyBuilder>();
 
 
 
@@ -60,7 +61,7 @@ builder.Services.AddScoped<IBaseMapper<Group, GroupDTO>, BaseMapper<Group, Group
 builder.Services.AddScoped<IBaseMapper<GroupDTO, Group>, BaseMapper<GroupDTO, Group>>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddIdentity<ApplicationUser,IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultUI()
     .AddDefaultTokenProviders();
@@ -75,9 +76,11 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 var app = builder.Build();
 

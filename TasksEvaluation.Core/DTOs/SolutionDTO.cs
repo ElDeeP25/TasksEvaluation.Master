@@ -17,6 +17,7 @@ namespace TasksEvaluation.Core.DTOs
         public int? StudentId { get; set; }
         public int? AssignmentId { get; set; }
         public int? GradeId { get; set; }
+        public DateTime? EntryDate { get; set; } // إضافة خاصية التاريخ هنا
 
     }
 }

@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using TasksEvaluation.Areas.Identity.Data;
 using TasksEvaluation.Core.DTOs;
 using TasksEvaluation.Core.Entities.Business;
+using TasksEvaluation.Core.Interfaces.IServices;
+using TasksEvaluation.Infrastructure.Services;
 
 namespace TasksEvaluation.Controllers
 {
@@ -15,15 +18,20 @@ namespace TasksEvaluation.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IMapper _mapper;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IEmailSender _emailSenders;
+        private readonly IEmailBodyBuilder _emailBodyBuilder;
 
         public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
-            IMapper mapper, RoleManager<IdentityRole> roleManager)
+     IMapper mapper, RoleManager<IdentityRole> roleManager, IEmailSender emailSender, IEmailBodyBuilder emailBodyBuilder)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _mapper = mapper;
             _roleManager = roleManager;
+            _emailSenders = emailSender ?? throw new ArgumentNullException(nameof(emailSender)); // تأكد من الاسم
+            _emailBodyBuilder = emailBodyBuilder ?? throw new ArgumentNullException(nameof(emailBodyBuilder));
         }
+
 
         [HttpGet]
         public IActionResult Register()
@@ -95,97 +103,98 @@ namespace TasksEvaluation.Controllers
             return RedirectToAction("Index", "Home"); // قم بتعديل "Home" و "Index" حسب الصفحة التي تريدها
         }
 
+        [HttpGet]
+       public IActionResult ForgotPassword()
+        {
+           return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordDTO model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user == null)
+                {
+                    return RedirectToAction("ForgotPasswordConfirmation");
+                }
+
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var callbackUrl = Url.Action("ResetPassword", "Account", new { token, email = user.Email }, protocol: HttpContext.Request.Scheme);
+
+                var placeholders = new Dictionary<string, string>
+        {
+            { "header", "Reset Your Password" },
+            { "body", "Click the link below to reset your password." },
+            { "url", callbackUrl },
+            { "linkTitle", "Reset Password" }
+        };
+
+                var emailContent = _emailBodyBuilder.GetEmailBody("reset_password", placeholders);
+                await _emailSenders.SendEmailAsync(model.Email, "Reset Password", emailContent);
+
+                return RedirectToAction("ForgotPasswordConfirmation");
+            }
+            return View(model);
+        }
 
 
 
-        //[HttpGet]
-        //public IActionResult ForgotPassword()
-        //{
-        //    return View();
-        //}
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> ForgotPassword(ForgotPasswordDTO model)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var user = await _userManager.FindByEmailAsync(model.Email);
-        //        if (user == null)
-        //        {
-        //            return RedirectToAction("ForgotPasswordConfirmation");
-        //        }
+        [HttpGet]
+        public IActionResult ForgotPasswordConfirmation()
+        {
+            return View();
+        }
 
-        //        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-        //        var callbackUrl = Url.Action("ResetPassword", "Account", new { token, email = user.Email }, protocol: HttpContext.Request.Scheme);
+        [HttpGet]
+        public IActionResult ResetPassword(string token = null)
+        {
+            if (token == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            var model = new ResetPasswordDTO { Token = token };
+            return View(model);
+        }
 
-        //        var placeholders = new Dictionary<string, string>
-        //        {
-        //            { "header", "Reset Your Password" },
-        //            { "body", "Click the link below to reset your password." },
-        //            { "url", callbackUrl },
-        //            { "linkTitle", "Reset Password" }
-        //        };
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetPasswordDTO model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
 
-        //        var emailContent = _emailBodyBuilder.GetEmailBody("reset_password", placeholders);
-        //        await _emailSenders.SendEmailAsync(model.Email, "Reset Password", emailContent);
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                return RedirectToAction("ResetPasswordConfirmation");
+            }
 
-        //        return RedirectToAction("ForgotPasswordConfirmation");
-        //    }
-        //    return View(model);
-        //}
+            var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("ResetPasswordConfirmation");
+            }
 
-        //[HttpGet]
-        //public IActionResult ForgotPasswordConfirmation()
-        //{
-        //    return View();
-        //}
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
 
-        //[HttpGet]
-        //public IActionResult ResetPassword(string token = null)
-        //{
-        //    if (token == null)
-        //    {
-        //        return RedirectToAction("Index", "Home");
-        //    }
-        //    var model = new ResetPasswordDTO { Token = token };
-        //    return View(model);
-        //}
+            return View(model);
+        }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> ResetPassword(ResetPasswordDTO model)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return View(model);
-        //    }
+        [HttpGet]
+        public IActionResult ResetPasswordConfirmation()
+        {
+            return View();
+        }
 
-        //    var user = await _userManager.FindByEmailAsync(model.Email);
-        //    if (user == null)
-        //    {
-        //        return RedirectToAction("ResetPasswordConfirmation");
-        //    }
-
-        //    var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
-        //    if (result.Succeeded)
-        //    {
-        //        return RedirectToAction("ResetPasswordConfirmation");
-        //    }
-
-        //    foreach (var error in result.Errors)
-        //    {
-        //        ModelState.AddModelError(string.Empty, error.Description);
-        //    }
-
-        //    return View(model);
-        //}
-
-        //[HttpGet]
-        //public IActionResult ResetPasswordConfirmation()
-        //{
-        //    return View();
-        //}
     }
 }
 

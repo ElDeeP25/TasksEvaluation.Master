@@ -1,0 +1,122 @@
+﻿@model List<TasksEvaluation.Core.DTOs.AssignmentDTO>
+
+@{
+    ViewData["Title"] = "Student Dashboard";
+    var student = ViewBag.Student as TasksEvaluation.Core.Entities.Business.Student;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            background: #f0f2f5;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            margin-top: 50px;
+            max-width: 1200px;
+        }
+
+        .card {
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s;
+            background: #ffffff;
+        }
+
+            .card:hover {
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            color: #ffffff;
+            font-weight: bold;
+            padding: 10px 20px;
+            transition: background-color 0.3s;
+        }
+
+            .btn-primary:hover {
+                background-color: #0056b3;
+            }
+
+        .text-muted {
+            color: #6c757d;
+        }
+
+        .text-dark {
+            color: #212529;
+        }
+
+        .header-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #343a40;
+        }
+
+        .welcome-text {
+            text-align: center;
+            color: #495057;
+        }
+
+        .assignment-card {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        @if (student != null)
+        {
+            <div class="header-title">
+                <h2>Welcome, @student.FullName</h2>
+                <p class="welcome-text">Email: @student.Email</p>
+            </div>
+
+            <!-- Display other student information as needed -->
+            @if (Model != null && Model.Any())
+            {
+                <h3 class="text-center mb-4">Your Assignments</h3>
+                <div class="row">
+                    @foreach (var assignment in Model)
+                    {
+                        <div class="col-md-4 assignment-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title text-dark">@assignment.Title</h5>
+                                    <p class="card-text">@assignment.Description</p>
+                                    <p class="card-text"><small class="text-muted">Deadline: @assignment.DeadLine.ToString("MM/dd/yyyy")</small></p>
+                                    <a href="@Url.Action("Details", "StudentSolution", new { assignmentId = assignment.Id })" class="btn btn-primary">
+                                        <i class="fas fa-info-circle"></i> Details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="mt-4 text-center">No assignments found for your group.</p>
+            }
+        }
+        else
+        {
+            <p class="mt-4 text-center">No student data available. Please log in again.</p>
+        }
+    </div>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

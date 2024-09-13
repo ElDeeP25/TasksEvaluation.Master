@@ -38,6 +38,7 @@ namespace TasksEvaluation.Infrastructure.Data
             modelBuilder.Entity<IdentityRoleClaim<string>>().ToTable("RoleClaims", "security");
             modelBuilder.Entity<IdentityUserToken<string>>().ToTable("UserTokens", "security");
 
+
         }
         
     }

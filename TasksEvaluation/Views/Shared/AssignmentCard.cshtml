@@ -1,0 +1,34 @@
+﻿@model AssignmentDTO
+
+@{
+
+    var solution = ViewBag.Solution as TasksEvaluation.Core.Entities.Business.Solution;
+}
+<div class="col-md-4">
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">@Model.Title</h5>
+            <p class="card-text">@Model.Description</p>
+            <p class="card-text"><small class="text-muted">Deadline: @Model.DeadLine.ToString("MM/dd/yyyy")</small></p>
+
+            @if (solution != null) // Check if a solution exists
+            {
+                <a href="@Url.Action("EditSolution", "StudentSolution", new { id = solution.Id })" class="btn btn-warning">
+                    <i class="fas fa-edit"></i> Edit Solution
+                </a>
+                <form asp-action="DeleteSolution" asp-controller="StudentSolution" method="post" style="display:inline;">
+                    <input type="hidden" name="id" value="solution.SolutionId" />
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Delete Solution
+                    </button>
+                </form>
+            }
+            else
+            {
+                <a href="@Url.Action("UploadSolution", "StudentSolution", new { assignmentId = Model.Id })" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Add Solution
+                </a>
+            }
+        </div>
+    </div>
+</div>

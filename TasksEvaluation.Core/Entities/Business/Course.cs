@@ -10,5 +10,7 @@ namespace TasksEvaluation.Core.Entities.Business
         public string Title { get; set; }
         public bool IsCompleted { get; set; } = false;
         public ICollection<Group> Groups { get; set; }
+        public string Type { get; set; }
+        public string ImageUrl { get; set; }
     }
 }

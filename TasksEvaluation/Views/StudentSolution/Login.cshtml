@@ -1,0 +1,129 @@
+﻿@model TasksEvaluation.Core.DTOs.StudentLogInDTO
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body {
+            background: #222D32;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .login-box {
+            margin-top: 75px;
+            height: auto;
+            background: #1A2226;
+            text-align: center;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+            border-radius: 10px;
+            padding: 40px;
+            color: #ECF0F5;
+        }
+
+        .login-icon {
+            height: 100px;
+            font-size: 80px;
+            line-height: 100px;
+            color: #27EF9F; /* Color matching the student login theme */
+        }
+
+        .login-title {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 30px;
+            letter-spacing: 2px;
+            font-weight: bold;
+            color: #ECF0F5;
+        }
+
+        .login-form {
+            margin-top: 25px;
+            text-align: center;
+        }
+
+        input[type=email] {
+            background-color: #1A2226; /* Dark background */
+            border: 1px solid #0DB8DE; /* Light border */
+            border-radius: 5px; /* Rounded corners */
+            font-weight: bold; /* Bold text */
+            color: #ECF0F5; /* Light text color */
+            padding: 10px; /* Padding */
+            margin-bottom: 20px; /* Space below the field */
+            outline: none; /* Remove outline on focus */
+        }
+
+            input[type=email]:focus {
+                border-color: #17a2b8; /* Border color on focus */
+                background-color: #1A2226; /* Maintain dark background */
+                box-shadow: 0 0 5px rgba(23, 162, 184, 0.5); /* Shadow effect */
+            }
+
+        .btn-primary {
+            background-color: #27EF9F; /* Match button color with logo */
+            border: none;
+            border-radius: 5px; /* Rounded corners */
+            color: #1A2226; /* Text color */
+            font-weight: bold;
+            letter-spacing: 1px;
+            padding: 15px 30px; /* Padding */
+            font-size: 16px; /* Font size */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Shadow effect */
+            transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s; /* Transitions */
+        }
+
+            .btn-primary:hover {
+                background-color: #0DB8DE; /* Darker color on hover */
+                color: #ECF0F5; /* Light text color on hover */
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Darker shadow on hover */
+                transform: scale(1.05); /* Slightly enlarge on hover */
+            }
+
+            .btn-primary:active {
+                background-color: #17a2b8; /* Color when active */
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Shadow when active */
+                transform: scale(1); /* Reset size when active */
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-2"></div>
+            <div class="col-lg-6 col-md-8 login-box">
+                <div class="col-lg-12 login-icon">
+                    <i class="fa fa-user" aria-hidden="true"></i> <!-- Updated to student login icon -->
+                </div>
+                <div class="col-lg-12 login-title">
+                    Student Login
+                </div>
+
+                <div class="col-lg-12 login-form">
+                    <form asp-action="Login" method="post">
+                        <div class="form-group">
+                            <label class="form-control-label">EMAIL</label>
+                            <input asp-for="Email" type="email" class="form-control" placeholder="Email" required />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="col-lg-12 loginbttm">
+                            <div class="col-lg-12 login-button">
+                                <button type="submit" class="btn btn-primary">Login</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-2"></div>
+        </div>
+    </div>
+</body>
+</html>

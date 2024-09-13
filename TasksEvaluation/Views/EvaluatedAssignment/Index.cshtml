@@ -1,0 +1,17 @@
+﻿@model IEnumerable<TasksEvaluation.Core.DTOs.AssignmentDTO>
+
+@{
+    ViewData["Title"] = "Evaluated Assignments";
+}
+
+<h2>Evaluated Assignments</h2>
+
+<div class="list-group">
+    @foreach (var assignment in Model)
+    {
+        <div class="list-group-item">
+            <p><strong>@assignment.Title</strong></p>
+            <a href="@Url.Action("Details", "EvaluatedAssignment", new { assignmentId = assignment.Id })" class="btn btn-primary">View Details</a>
+        </div>
+    }
+</div>

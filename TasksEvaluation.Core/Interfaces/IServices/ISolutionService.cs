@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using TasksEvaluation.Core.DTOs;
+using TasksEvaluation.Core.Entities.Business;
 
 namespace TasksEvaluation.Core.Interfaces.IServices
 {
@@ -19,5 +17,7 @@ namespace TasksEvaluation.Core.Interfaces.IServices
         Task<SolutionDTO> UploadSolution(UploadSolutionDTO model);
         Task<IEnumerable<SolutionStudentDTO>> GetStudenSolutions();
         Task<SolutionStudentDTO> GetSolutionWithStudent(int id);
+        object GetSolutionById(int id);
+        Task<IEnumerable<EvaluationGrade>> GetEvaluationGrades();
     }
 }

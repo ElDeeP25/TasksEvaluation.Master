@@ -41,6 +41,11 @@ namespace TasksEvaluation.Infrastructure.Services
             await _assignmentRepository.Delete(entity);
         }
 
+        public Task DeleteAssignment(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<AssignmentDTO> GetAssignment(int id) => _assignmentDTOMapper.MapModel(await _assignmentRepository.GetById(id));
 
         public async Task<IEnumerable<AssignmentDTO>> GetAssignments() => _assignmentDTOMapper.MapList(await _assignmentRepository.GetAll());
@@ -51,6 +56,11 @@ namespace TasksEvaluation.Infrastructure.Services
             var existingData = _assignmentMapper.MapModel(model);
             existingData.UpdateDate = DateTime.Now;
             await _assignmentRepository.Update(existingData);
+        }
+
+        public Task UpdateAssignment(AssignmentDTO assignment)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -2,8 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TasksEvaluation.Core.DTOs;
 using TasksEvaluation.Core.Entities.Business;
@@ -11,10 +11,11 @@ using TasksEvaluation.Core.Interfaces.IRepositories;
 using TasksEvaluation.Core.Interfaces.IServices;
 using TasksEvaluation.Core.IRepositories;
 using TasksEvaluation.Core.Mapper;
+using TasksEvaluation.Infrastructure.Data;
 
 namespace TasksEvaluation.Infrastructure.Services
 {
-    public class SolutionService : ISolutionService 
+    public class SolutionService : ISolutionService
     {
         private readonly IBaseMapper<Solution, SolutionDTO> _solutionDTOMapper;
         private readonly IBaseMapper<SolutionDTO, Solution> _solutionMapper;
@@ -23,28 +24,29 @@ namespace TasksEvaluation.Infrastructure.Services
         private readonly IBaseRepository<Solution> _solutionRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IUnitOfWork _unitOfWork;
-
-        private List<string> _allowedFileExtensions = new() { ".pdf", ".docx" };
-        private int _maxAllowedSizeFile = 5242880;
+        private readonly ApplicationDbContext _context;
+        private List<string> _allowedFileExtensions = new() { ".pdf", ".docx", ".jpg" };
+        private int _maxAllowedSizeFile = 268436456; // 256MB
 
         public SolutionService(
             IBaseMapper<Solution, SolutionDTO> solutionDTOMapper,
             IBaseMapper<SolutionDTO, Solution> solutionMapper,
             IBaseRepository<Solution> solutionRepository,
-          IWebHostEnvironment webHostEnvironment ,
-          IBaseMapper<UploadSolutionDTO, SolutionDTO> UploadsolutionDTOMapper,
-          IBaseMapper<SolutionDTO, UploadSolutionDTO> UploadsolutionMapper,
-          IUnitOfWork unitOfWork
-
-          )
+            IWebHostEnvironment webHostEnvironment,
+            IBaseMapper<UploadSolutionDTO, SolutionDTO> uploadSolutionDTOMapper,
+            IBaseMapper<SolutionDTO, UploadSolutionDTO> uploadSolutionMapper,
+            IUnitOfWork unitOfWork,
+            ApplicationDbContext context
+        )
         {
             _solutionDTOMapper = solutionDTOMapper;
             _solutionMapper = solutionMapper;
             _solutionRepository = solutionRepository;
             _webHostEnvironment = webHostEnvironment;
-            _UploadsolutionDTOMapper= UploadsolutionDTOMapper;
-            _UploadsolutionMapper = UploadsolutionMapper;
-            _unitOfWork=unitOfWork;
+            _UploadsolutionDTOMapper = uploadSolutionDTOMapper;
+            _UploadsolutionMapper = uploadSolutionMapper;
+            _unitOfWork = unitOfWork;
+            _context = context;
         }
 
         public async Task<SolutionDTO> Create(SolutionDTO model)
@@ -54,12 +56,12 @@ namespace TasksEvaluation.Infrastructure.Services
             return _solutionDTOMapper.MapModel(await _solutionRepository.Create(entity));
         }
 
-
         public async Task<SolutionDTO> GetSolution(int id) => _solutionDTOMapper.MapModel(await _solutionRepository.GetById(id));
-        public async Task<SolutionStudentDTO> GetSolutionWithStudent(int id) {
 
-           var sol= await _solutionRepository.Find(s => s.Id == id, include: source => source.Include(s => s.Student).Include(s => s.Assignment));
-            var  solution = new SolutionStudentDTO
+        public async Task<SolutionStudentDTO> GetSolutionWithStudent(int id)
+        {
+            var sol = await _solutionRepository.Find(s => s.Id == id, include: source => source.Include(s => s.Student).Include(s => s.Assignment));
+            return new SolutionStudentDTO
             {
                 Id = sol.Id,
                 SolutionFile = sol.SolutionFile,
@@ -67,14 +69,13 @@ namespace TasksEvaluation.Infrastructure.Services
                 StudentId = sol.StudentId,
                 AssignmentId = sol.AssignmentId,
                 GradeId = sol.GradeId,
-                StudentName = sol.Student?.FullName, // Mapping Student's name
-                AssignmentTitle = sol.Assignment?.Title , // Mapping Assignment's title
-
-
+                StudentName = sol.Student?.FullName,
+                AssignmentTitle = sol.Assignment?.Title,
             };
-            return solution;
-        } 
+        }
+
         public async Task<IEnumerable<SolutionDTO>> GetSolutions() => _solutionDTOMapper.MapList(await _solutionRepository.GetAll());
+
         public async Task<IEnumerable<SolutionStudentDTO>> GetStudenSolutions()
         {
             var solutions = await _solutionRepository.FindAll(s => s.Id > 0, include: source => source.Include(s => s.Student).Include(s => s.Assignment));
@@ -86,14 +87,13 @@ namespace TasksEvaluation.Infrastructure.Services
                 StudentId = solution.StudentId,
                 AssignmentId = solution.AssignmentId,
                 GradeId = solution.GradeId,
-                StudentName = solution.Student?.FullName, // Mapping Student's name
-                AssignmentTitle = solution.Assignment?.Title , // Mapping Assignment's title
-
+                StudentName = solution.Student?.FullName,
+                AssignmentTitle = solution.Assignment?.Title,
             }).ToList();
         }
+
         public async Task Update(SolutionDTO model)
         {
-            // Retrieve the existing entity from the repository
             var existingEntity = await _solutionRepository.GetById(model.Id);
 
             if (existingEntity == null)
@@ -101,13 +101,12 @@ namespace TasksEvaluation.Infrastructure.Services
                 throw new InvalidOperationException("Solution not found.");
             }
 
-            // Manually update the properties of the existing entity
             existingEntity.Notes = model.Notes;
             existingEntity.GradeId = model.GradeId;
 
-            // Perform other property updates as needed
+            // Debug output to check the state before updating
+            Console.WriteLine($"Updating Solution: Id={existingEntity.Id}, Notes={existingEntity.Notes}, GradeId={existingEntity.GradeId}");
 
-            // Update the entity in the repository
             await _solutionRepository.Update(existingEntity);
         }
 
@@ -120,41 +119,37 @@ namespace TasksEvaluation.Infrastructure.Services
             }
 
             existingData.Notes = model.Notes;
-            existingData.UpdateDate = DateTime.Now;
+            existingData.GradeId = model.GradeId;
 
             if (model.SolutionFile != null)
             {
-                var extension = Path.GetExtension(model.SolutionFile.FileName);
-
+                string extension = Path.GetExtension(model.SolutionFile.FileName);
                 if (!_allowedFileExtensions.Contains(extension))
                 {
-                    return new SolutionDTO { Notes = "Only .pdf, .docx files are allowed!" };
+                    throw new Exception("Invalid file extension.");
                 }
 
                 if (model.SolutionFile.Length > _maxAllowedSizeFile)
                 {
-                    return new SolutionDTO { Notes = "File cannot be more than 5 MB!" };
+                    throw new Exception("File size exceeds the limit.");
                 }
 
-                var fileName = $"{Guid.NewGuid()}{extension}";
-                var path = Path.Combine($"{_webHostEnvironment.WebRootPath}/pdfs", fileName);
+                var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+                Directory.CreateDirectory(uploadsFolder);
+                var filePath = Path.Combine(uploadsFolder, model.SolutionFile.FileName);
 
-                using var stream = File.Create(path);
-                model.SolutionFile.CopyTo(stream);
-
-                // Delete the old file
-                var oldFilePath = Path.Combine($"{_webHostEnvironment.WebRootPath}/pdfs", existingData.SolutionFile);
-                if (System.IO.File.Exists(oldFilePath))
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
-                    System.IO.File.Delete(oldFilePath);
+                    await model.SolutionFile.CopyToAsync(fileStream);
                 }
 
-                existingData.SolutionFile = fileName;
+                existingData.SolutionFile = model.SolutionFile.FileName;
             }
 
             await _solutionRepository.Update(existingData);
             return _solutionDTOMapper.MapModel(existingData);
         }
+
 
         public async Task DeleteSolution(int id)
         {
@@ -173,18 +168,16 @@ namespace TasksEvaluation.Infrastructure.Services
 
         public async Task<SolutionDTO> UploadSolution(UploadSolutionDTO model)
         {
-            
             var extension = Path.GetExtension(model.SolutionFile.FileName);
 
             if (!_allowedFileExtensions.Contains(extension))
                 return new SolutionDTO { Notes = "Only .pdf, .docx files are allowed!" };
 
             if (model.SolutionFile.Length > _maxAllowedSizeFile)
-                return new SolutionDTO { Notes = "File cannot be more than 5 MB!" };
+                return new SolutionDTO { Notes = "File cannot be more than 256 MB!" };
 
             var fileName = $"{Guid.NewGuid()}{extension}";
-
-            var path = Path.Combine($"{_webHostEnvironment.WebRootPath}/pdfs", fileName);
+            var path = Path.Combine($"{_webHostEnvironment.WebRootPath}/img", fileName);
             using var stream = File.Create(path);
             model.SolutionFile.CopyTo(stream);
             var solution = _UploadsolutionDTOMapper.MapModel(model);
@@ -193,18 +186,23 @@ namespace TasksEvaluation.Infrastructure.Services
             await _unitOfWork.Solutions.Add(entity);
             _unitOfWork.Complete();
             return _solutionDTOMapper.MapModel(entity);
-
         }
 
-
+        public async Task<IEnumerable<EvaluationGrade>> GetEvaluationGrades()
+        {
+            return await _context.EvaluationGrades.ToListAsync();
+        }
 
         public async Task<SolutionDTO> GetSolution(int assignmentId, int studentId)
         {
-            var solutions = await _solutionRepository.GetAll(); // Ensure this fetches all solutions or use a more optimized query
+            var solutions = await _solutionRepository.GetAll();
             var sol = solutions.FirstOrDefault(s => s.AssignmentId == assignmentId && s.StudentId == studentId);
             return _solutionDTOMapper.MapModel(sol);
         }
 
-
+        public object GetSolutionById(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

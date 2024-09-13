@@ -1,0 +1,108 @@
+﻿@model TasksEvaluation.Core.DTOs.SolutionDTO
+
+@{
+    ViewData["Title"] = "Upload Solution";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            background: #f0f2f5;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            margin-top: 60px;
+        }
+
+        .form-control, .form-group {
+            border-radius: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-primary {
+            background-color: #28a745;
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: bold;
+            padding: 12px 24px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+            .btn-primary:hover {
+                background-color: #218838;
+                transform: scale(1.05);
+            }
+
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            transition: box-shadow 0.3s;
+        }
+
+            .card:hover {
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            }
+
+        .text-danger {
+            font-size: 0.875rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-control {
+            border-color: #ced4da;
+            box-shadow: none;
+        }
+
+            .form-control:focus {
+                border-color: #28a745;
+                box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="mb-4">Upload Your Solution</h2>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <form asp-action="UploadSolution" asp-controller="StudentSolution" method="post" enctype="multipart/form-data">
+                    <div class="form-group mb-4">
+                        <label asp-for="SolutionFile" class="form-label">Solution File</label>
+                        <input asp-for="SolutionFile" class="form-control" type="file" required />
+                        <span asp-validation-for="SolutionFile" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-4">
+                        <label asp-for="Notes" class="form-label">Notes</label>
+                        <textarea asp-for="Notes" class="form-control" rows="4" required></textarea>
+                        <span asp-validation-for="Notes" class="text-danger"></span>
+                    </div>
+                    <input type="hidden" asp-for="AssignmentId" />
+                    <input type="hidden" asp-for="StudentId" />
+                    <button type="submit" class="btn btn-primary">Upload Solution</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

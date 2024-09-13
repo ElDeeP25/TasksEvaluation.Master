@@ -1,0 +1,136 @@
+﻿@model TasksEvaluation.Core.DTOs.AssignmentDTO
+
+@{
+    ViewData["Title"] = "Assignment Details";
+    var student = ViewBag.Student as TasksEvaluation.Core.Entities.Business.Student;
+    var solution = ViewBag.Solution as TasksEvaluation.Core.DTOs.SolutionDTO;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            background: #f5f5f5;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            margin-top: 60px;
+        }
+
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        .card-title {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .card-text {
+            font-size: 18px;
+            color: #555;
+        }
+
+        .btn {
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            color: #fff;
+            transition: background-color 0.3s;
+        }
+
+            .btn-primary:hover {
+                background-color: #0056b3;
+            }
+
+        .btn-warning {
+            background-color: #ffc107;
+            border: none;
+            color: #333;
+            transition: background-color 0.3s;
+        }
+
+            .btn-warning:hover {
+                background-color: #e0a800;
+            }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border: none;
+            color: #fff;
+            transition: background-color 0.3s;
+        }
+
+            .btn-danger:hover {
+                background-color: #c82333;
+            }
+
+        .text-muted {
+            color: #6c757d !important;
+        }
+
+        .text-danger {
+            color: #dc3545 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="mb-4">Assignment Details</h2>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">@Model.Title</h5>
+                <p class="card-text">@Model.Description</p>
+                <p class="card-text">
+                    <small class="text-muted">Deadline: @Model.DeadLine.ToString("MMMM d, yyyy")</small>
+                </p>
+                @if (Model.DeadLine <= DateTime.Now)
+                {
+                    <p class="text-danger">Time Finished for Submit</p>
+                }
+                else if (solution != null)
+                {
+                    <p class="card-text">Solution Uploaded: @solution.EntryDate?.ToString("MMMM d, yyyy")</p>
+                    <div class="d-flex">
+                        <a href="@Url.Action("EditSolution", "StudentSolution", new { id = solution.Id })" class="btn btn-warning me-2">
+                            <i class="fas fa-edit"></i> Edit Solution
+                        </a>
+                        <form asp-action="DeleteSolution" method="post" style="display:inline;">
+                            <input type="hidden" name="id" value="@solution.Id" />
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Delete Solution
+                            </button>
+                        </form>
+                    </div>
+                }
+                else
+                {
+                    <a href="@Url.Action("UploadSolution", "StudentSolution", new { assignmentId = Model.Id })" class="btn btn-primary">
+                        <i class="fas fa-upload"></i> Upload Solution
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

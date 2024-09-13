@@ -6,34 +6,23 @@
     <form asp-action="Edit" enctype="multipart/form-data">
         @Html.AntiForgeryToken()
 
-        <div class="form-group">
-            <label asp-for="SolutionFile" class="form-label">Solution File</label>
-            <input asp-for="SolutionFile" type="file" class="form-control" />
-            <span asp-validation-for="SolutionFile" class="text-danger"></span>
-        </div>
+        <!-- Hidden fields for StudentId, AssignmentId, and SolutionFile -->
+        <input type="hidden" asp-for="StudentId" />
+        <input type="hidden" asp-for="AssignmentId" />
+        <input type="hidden" asp-for="SolutionFile" />
 
         <div class="form-group">
-            <label asp-for="Notes" class="form-label"></label>
+            <label asp-for="Notes" class="form-label">Notes</label>
             <textarea asp-for="Notes" class="form-control" placeholder="Enter notes" rows="4"></textarea>
             <span asp-validation-for="Notes" class="text-danger"></span>
         </div>
 
         <div class="form-group">
-            <label asp-for="GradeId" class="form-label"></label>
-            <input asp-for="GradeId" class="form-control" />
+            <label asp-for="GradeId" class="form-label">Grade</label>
+            <select asp-for="GradeId" asp-items="ViewBag.Grades" class="form-control">
+                <option value="">Select a grade</option>
+            </select>
             <span asp-validation-for="GradeId" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="StudentId" class="form-label"></label>
-            <input asp-for="StudentId" class="form-control" />
-            <span asp-validation-for="StudentId" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="AssignmentId" class="form-label"></label>
-            <input asp-for="AssignmentId" class="form-control" />
-            <span asp-validation-for="AssignmentId" class="text-danger"></span>
         </div>
 
         <button type="submit" class="btn btn-primary">Save</button>

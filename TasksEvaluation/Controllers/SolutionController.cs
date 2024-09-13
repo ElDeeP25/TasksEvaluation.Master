@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using TasksEvaluation.Core.DTOs;
 using TasksEvaluation.Core.Interfaces.IServices;
 
@@ -9,16 +12,18 @@ namespace TasksEvaluation.Controllers
     public class SolutionController : Controller
     {
         private readonly ISolutionService _solutionService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public SolutionController(ISolutionService solutionService)
+        public SolutionController(ISolutionService solutionService, IWebHostEnvironment webHostEnvironment)
         {
             _solutionService = solutionService;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: Solution
         public async Task<IActionResult> Index()
         {
-            var solutions = await _solutionService.GetSolutions();
+            var solutions = await _solutionService.GetSolutions(); // Get solutions
             return View(solutions);
         }
 
@@ -37,6 +42,7 @@ namespace TasksEvaluation.Controllers
         public async Task<IActionResult> Create()
         {
             // Optionally load additional data here if needed for dropdowns
+            ViewBag.Grades = new SelectList(await _solutionService.GetEvaluationGrades(), "Id", "Grade");
             return View();
         }
 
@@ -54,6 +60,7 @@ namespace TasksEvaluation.Controllers
             }
 
             // Optionally reload additional data if needed for dropdowns
+            ViewBag.Grades = new SelectList(await _solutionService.GetEvaluationGrades(), "Id", "Grade");
             return View(solutionDTO);
         }
 
@@ -66,14 +73,17 @@ namespace TasksEvaluation.Controllers
                 return NotFound();
             }
 
-            // Optionally load additional data here if needed for dropdowns
+            // Set grades for dropdown
+            var grades = await _solutionService.GetEvaluationGrades();
+            ViewBag.Grades = new SelectList(grades, "Id", "Grade", solution.GradeId);
+
             return View(solution);
         }
 
         // POST: Solution/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id, SolutionFile, Notes, GradeId, StudentId, AssignmentId")] SolutionDTO solutionDTO)
+        public async Task<IActionResult> Edit(int id, [Bind("SolutionFile,Id, Notes, GradeId, StudentId, AssignmentId")] SolutionDTO solutionDTO)
         {
             if (id != solutionDTO.Id)
             {
@@ -82,12 +92,36 @@ namespace TasksEvaluation.Controllers
 
             if (ModelState.IsValid)
             {
-                await _solutionService.Update(solutionDTO);
-                TempData["SuccessMessage"] = "Solution updated successfully!";
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    var existingSolution = await _solutionService.GetSolution(id);
+                    solutionDTO.StudentId = existingSolution.StudentId;
+                    solutionDTO.AssignmentId = existingSolution.AssignmentId;
+
+                    // Handle file upload logic if a new file is provided
+                    if (solutionDTO.SolutionFile != null)
+                    {
+                        // Handle file upload logic here
+                    }
+                    else
+                    {
+                        // Maintain the existing file if no new file is provided
+                        var existingSolutionFile = existingSolution.SolutionFile;
+                        solutionDTO.SolutionFile = existingSolutionFile;
+                    }
+
+                    await _solutionService.Update(solutionDTO);
+                    TempData["SuccessMessage"] = "Solution updated successfully!";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    TempData["ErrorMessage"] = "An error occurred while updating the solution.";
+                    return View(solutionDTO);
+                }
             }
 
-            // Optionally reload additional data if needed for dropdowns
+            ViewBag.Grades = new SelectList(await _solutionService.GetEvaluationGrades(), "Id", "Grade");
             return View(solutionDTO);
         }
 
