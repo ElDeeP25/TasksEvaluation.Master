@@ -23,7 +23,7 @@ namespace TasksEvaluation.Controllers
         // GET: Solution
         public async Task<IActionResult> Index()
         {
-            var solutions = await _solutionService.GetSolutions(); // Get solutions
+            var solutions = await _solutionService.GetStudenSolutions(); // Get solutions
             return View(solutions);
         }
 

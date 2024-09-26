@@ -78,7 +78,7 @@ namespace TasksEvaluation.Infrastructure.Services
 
         public async Task<IEnumerable<SolutionStudentDTO>> GetStudenSolutions()
         {
-            var solutions = await _solutionRepository.FindAll(s => s.Id > 0, include: source => source.Include(s => s.Student).Include(s => s.Assignment));
+            var solutions = await _solutionRepository.FindAll(s => s.Id > 0, include: source => source.Include(s => s.Student).Include(s => s.Assignment).Include(s=> s.Grade ));
             return solutions.Select(solution => new SolutionStudentDTO
             {
                 Id = solution.Id,
@@ -89,6 +89,7 @@ namespace TasksEvaluation.Infrastructure.Services
                 GradeId = solution.GradeId,
                 StudentName = solution.Student?.FullName,
                 AssignmentTitle = solution.Assignment?.Title,
+                GardeName = solution.Grade.Grade
             }).ToList();
         }
 

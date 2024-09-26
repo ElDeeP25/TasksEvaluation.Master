@@ -1,4 +1,4 @@
-﻿@model IEnumerable<TasksEvaluation.Core.DTOs.SolutionDTO>
+﻿@model IEnumerable<TasksEvaluation.Core.DTOs.SolutionStudentDTO>
 
 <div class="container mt-5 p-4 shadow-lg rounded bg-light">
     <h2 class="text-center mb-4">Solutions</h2>
@@ -29,9 +29,9 @@
                         </div>
                     </td>
                     <td>@solution.Notes</td>
-                    <td>@solution.GradeId</td>
-                    <td>@solution.StudentId</td>
-                    <td>@solution.AssignmentId</td>
+                    <td>@solution.GardeName</td>
+                    <td>@solution.StudentName</td>
+                    <td>@solution.AssignmentTitle</td>
                     <td>
                         <a href="@Url.Action("Edit", new { id = solution.Id })" class="btn btn-warning btn-sm me-2">Edit</a>
                         <a href="@Url.Action("Delete", new { id = solution.Id })" class="btn btn-danger btn-sm">Delete</a>
